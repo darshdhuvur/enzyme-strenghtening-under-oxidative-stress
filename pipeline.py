@@ -9,11 +9,14 @@ parser.add_argument("--pdb", default="1CRN.pdb", help="Input PDB file")
 parser.add_argument("--name", default="Crambin", help="Enzyme Name for output")
 args = parser.parse_args()
 
-FOLDX_BINARY = "/home/darsh/ProteinMPNN/foldx_20251231.exe"
+# --- CONFIGURATION ---
+# UPDATE THESE PATHS BEFORE RUNNING ON YOUR LOCAL MACHINE
+FOLDX_BINARY = "/path/to/your/foldx.exe" 
+windows_base_path = "./output_folder"
+
 PDB_FILE = args.pdb
 ENZYME_NAME = args.name
 
-windows_base_path = "/mnt/c/Users/darsh/Downloads/Enzyme Oxidization 25-26"
 final_output_folder = os.path.join(windows_base_path, ENZYME_NAME)
 
 if not os.path.exists(final_output_folder):
