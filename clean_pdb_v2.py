@@ -41,3 +41,24 @@ def clean_pdb(input_file):
             chain_id = line[21]
             
             if current_chain and chain_id != current_chain:
+<<<<<<< HEAD
+=======
+                f.write("TER\n")
+            
+            f.write(line)
+            current_chain = chain_id
+            atom_count += 1
+        
+        f.write("TER\n")
+        f.write("END\n")
+
+    print(f"Success! Saved to: {output_file}")
+    print(f"Total Atoms: {atom_count}")
+    print(f"Whitelisted Cofactors Preserved: {KEEP_COFACTORS}")
+
+if __name__ == "__main__":
+    if len(sys.argv) < 2:
+        print("Usage: python clean_pdb.py <pdb_file>")
+    else:
+        clean_pdb(sys.argv[1])
+>>>>>>> 01e6b8f98c73fc9c09382451e0ca775db5c8d57e
