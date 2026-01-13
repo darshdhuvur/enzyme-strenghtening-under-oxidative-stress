@@ -1,0 +1,944 @@
+    1  nvidia-smi
+    2  sudo apt install nvidia-cuda-toolkit
+    3  nvcc --version
+    4  sudo apt remove gromacs
+    5  wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+    6  bash Miniconda3-latest-Linux-x86_64.sh
+    7  conda create -n gmx_gpu gromacs cuda -c conda-forge
+    8  conda activate gmx_gpu
+    9  gmx mdrun -version
+   10  gmx mdrun -s topol.tpr -nb gpu
+   11  cd ~
+   12  gmx pdb2gmx -f $GMXLIB/topol.top -o test.gro
+   13  wget https://files.rcsb.org/download/1AKI.pdb -O 1aki.pdb
+   14  gmx pdb2gmx -f 1aki.pdb -o processed.gro -water spce
+   15  gmx editconf -f processed.gro -o newbox.gro -c -d 1.0 -bt cubic
+   16  gmx solvate -cp newbox.gro -cs spc216.gro -o solvated.gro -p topol.top
+   17  wget https://raw.githubusercontent.com/gromacs/gromacs/master/share/gromacs/top/em.mdp
+   18  gmx grompp -f em.mdp -c solvated.gro -p topol.top -o em.tpr
+   19  nano em.mdp
+   20  gmx grompp -f em.mdp -c solvated.gro -p topol.top -o em.tpr
+   21  gmx grompp -f em.mdp -c solvated.gro -p topol.top -o em.tpr -maxwarn 1
+   22  gmx mdrun -s em.tpr -nb gpu
+   23  conda deactivate
+   24  sudo apt update
+   25  sudo apt install build-essential cmake git wget unzip
+   26  sudo apt install libfftw3-dev libhwloc-dev
+   27  sudo apt install nvidia-cuda-toolkit
+   28  mkdir ~/gromacs_src
+   29  cd ~/gromacs_src
+   30  wget ftp://ftp.gromacs.org/pub/gromacs/gromacs-2025.4.tar.gz
+   31  tar xfz gromacs-2025.4.tar.gz
+   32  cd gromacs-2025.4
+   33  mkdir build
+   34  cd build
+   35  cmake .. -DGMX_BUILD_OWN_FFTW=ON -DGMX_GPU=CUDA -DCUDA_TOOLKIT_ROOT_DIR=/usr/local/cuda -DREGRESSIONTEST_DOWNLOAD=ON
+   36  sudo apt remove nvidia-cuda-toolkit
+   37  wget https://developer.download.nvidia.com/compute/cuda/12.9.105/local_installers/cuda_12.9.105_535.54.03_linux.run
+   38  sudo sh cuda_12.9.105_535.54.03_linux.run
+   39  sudo apt remove nvidia-cuda-toolkit
+   40  wget https://developer.download.nvidia.com/compute/cuda/repos/wsl-ubuntu/x86_64/cuda-wsl-ubuntu.pin
+   41  sudo mv cuda-wsl-ubuntu.pin /etc/apt/preferences.d/cuda-repository-pin-600
+   42  sudo apt-key adv --fetch-keys https://developer.download.nvidia.com/compute/cuda/repos/wsl-ubuntu/x86_64/3bf863cc.pub
+   43  sudo add-apt-repository "deb https://developer.download.nvidia.com/compute/cuda/repos/wsl-ubuntu/x86_64/ /"
+   44  sudo apt update
+   45  sudo apt install -y cuda-toolkit-12-9
+   46  echo 'export PATH=/usr/local/cuda-12.9/bin:$PATH' >> ~/.bashrc
+   47  echo 'export LD_LIBRARY_PATH=/usr/local/cuda-12.9/lib64:$LD_LIBRARY_PATH' >> ~/.bashrc
+   48  source ~/.bashrc
+   49  nvcc --version
+   50  pwd
+   51  cd ~/gromacs_src/gromacs-2025.4/build
+   52  cmake .. -DGMX_BUILD_OWN_FFTW=ON -DGMX_GPU=CUDA -DCUDA_TOOLKIT_ROOT_DIR=/usr/local/cuda-12.9 -DREGRESSIONTEST_DOWNLOAD=ON
+   53  sudo apt update
+   54  sudo apt install -y libopenmpi-dev openmpi-bin
+   55  cmake .. -DGMX_BUILD_OWN_FFTW=ON -DGMX_GPU=CUDA -DCUDA_TOOLKIT_ROOT_DIR=/usr/local/cuda-12.9 -DREGRESSIONTEST_DOWNLOAD=ON
+   56  cd ~/gromacs_src/gromacs-2025.4
+   57  rm -rf build
+   58  mkdir build
+   59  cd build
+   60  cmake .. -DGMX_BUILD_OWN_FFTW=ON -DGMX_GPU=CUDA -DCUDA_TOOLKIT_ROOT_DIR=/usr/local/cuda-12.9 -DCUDA_ARCHITECTURES="86" -DREGRESSIONTEST_DOWNLOAD=ON -DCMAKE_DISABLE_FIND_PACKAGE_MPI=ON
+   61  cd ~/gromacs_src/gromacs-2025.4/build
+   62  cmake ..   -DGMX_BUILD_OWN_FFTW=ON   -DGMX_GPU=CUDA   -DCUDA_TOOLKIT_ROOT_DIR=/usr/local/cuda-12.9   -DCUDA_ARCHITECTURES="86"   -DREGRESSIONTEST_DOWNLOAD=ON   -DCMAKE_DISABLE_FIND_PACKAGE_MPI=ON
+   63  make -j$(nproc)
+   64  sudo make install
+   65  source /usr/local/gromacs/bin/GMXRC
+   66  gmx mdrun -version
+   67  sudo apt update
+   68  sudo apt install gromacs
+   69  gmx --version
+   70  source /usr/local/gromacs/bin/GMXRC
+   71  gmx --version
+   72  sudo apt update && sudo apt upgrade -ysudo apt update && sudo apt upgrade -y
+   73  sudo apt update && sudo apt upgrade -y
+   74  sudo apt install -y git wget build-essential
+   75  wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+   76  bash Miniconda3-latest-Linux-x86_64.sh
+   77  -u
+   78  conda --version
+   79  conda create -n proteinmpnn python=3.9 -y
+   80  conda activate proteinmpnn
+   82  cd ProteinMPNN
+   83  pip install -r requirements.txt
+   84  pip install torch torchvision torchaudio
+   85  python protein_mpnn_run.py   --example_pdbs example_pdbs/   --output_dir test_output   --num_seq_per_target 1
+   86  python protein_mpnn_run.py   --pdb_path example_pdbs/1qys.pdb   --out_folder test_output   --num_seq_per_target 1
+   87  pwd
+   88  ls example_pdbs
+   89  mkdir pdbs
+   90  my CA(TEST).pdb pdbs/
+   91  my CA.pdb pdbs/
+   92  mv CA.pdb pdbs/
+   93  ls ~
+   94  mkdir -p ~/ProteinMPNN/pdbs
+   95  mv 1aki.pdb ~/ProteinMPNN/pdbs/
+   96  pwd
+   97  ls
+   98  find ~ -name "CA.pdb"
+   99  mkdir -p ~/ProteinMPNN/pdbs
+  100  cd ~/ProteinMPNN/pdbs
+  101  wget https://files.rcsb.org/download/1QYS.pdb
+  102  ls
+  103  cd ~/ProteinMPNN
+  104  python protein_mpnn_run.py   --pdb_path pdbs/1QYS.pdb   --out_folder test_output   --num_seq_per_target 1
+  105  ls ~/ProteinMPNN/test_output/1QYS/sequences/
+  106  mkdir -p ~/ProteinMPNN/test_output/1QYS/sequences
+  107  python protein_mpnn_run.py   --pdb_path pdbs/1QYS.pdb   --out_folder test_output   --num_seq_per_target 1
+  108  ls ~/ProteinMPNN/test_output/1QYS/sequences/
+  110  cd ProteinMPNN
+  111  git checkout tags/v1.0.1
+  112  conda activate proteinmpnn
+  113  pip install -r requirements.txt
+  114  pip install torch torchvision torchaudio
+  115  conda activate proteinmpnn
+  116  pip install -r requirements.txt
+  117  ls ../
+  118  cd ~
+  119  rm -rf ProteinMPNN
+  121  cd ProteinMPNN
+  122  python protein_mpnn_run.py --help
+  123  mkdir -p inputs
+  124  wget https://files.rcsb.org/download/1CRN.pdb -O inputs/1CRN.pdb
+  125  mkdir -p outputs
+  126  python protein_mpnn_run.py     --pdb_path inputs/1CRN.pdb     --out_folder outputs     --num_seq_per_target 2     --sampling_temp "0.1"     --batch_size 1
+  127  ls outputs/seqs
+  128  cat outputs/seqs/*.fa
+  129  echo "TA2V,IA7E,VA8E,RA10K,SA11K,NA12K,FA13Y,NA14E,VA15E,RA17L,LA18K,PA19S,EA23K,AA24E,IA25E,TA28K,YA29A,AA38T,TA39K,GA42P,AA45P,NA46Y;
+  130  TA2V,IA7E,VA8E,RA10K,SA11K,NA12K,FA13Y,NA14E,VA15E,RA17K,LA18K,PA19S,EA23A,AA24E,IA25E,TA28K,YA29K,AA38T,TA39K,GA42A,AA45P,NA46Y;" > individual_list.txt
+  131  ./foldx.exe --command=BuildModel --pdb=1CRN.pdb --mutant-file=individual_list.txt
+  132  chmod +x foldx.exe
+  133  ./foldx.exe --command=BuildModel --pdb=1CRN.pdb --mutant-file=individual_list.txt
+  134  explorer.exe .
+  135  ls -l foldx.exe
+  136  explorer.exe .
+  137  ls -l foldx.exe
+  138  explorer.exe .
+  139  ls -l foldx_20251231.exe
+  140  chmod +x foldx_20251231.exe
+  141  ./foldx_20251231.exe --command=BuildModel --pdb=1CRN.pdb --mutant-file=individual_list.txt
+  142  cp inputs/1CRN.pdb .
+  143  ./foldx_20251231.exe --command=BuildModel --pdb=1CRN.pdb --mutant-file=individual_list.txt
+  144  explorer.exe .
+  145  exit
+  146  cd ~
+  147  mkdir enzyme_project
+  148  cd enzyme_project
+  149  # filter_test.py
+  150  # 1. The Inputs (Simulating a ProteinMPNN file)
+  151  wild_type_seq = "TTCCPSIVARSNFNVCRLPGTPEAICATYTGCIIIPGATCPGDYAN"
+  152  # Here are 3 dummy mutants.
+  153  # Mutant 1: Position 0 changed T -> A (Safe)
+  154  # Mutant 2: Position 1 changed T -> M (UNSAFE - Methionine!)
+  155  # Mutant 3: Position 2 changed C -> L (Safe)
+  156  mutant_sequences = [
+  157  ]
+  158  print(f"Wild Type: {wild_type_seq}")
+  159  print("-" * 30)
+  160  valid_mutants_for_foldx = []
+  161  # 2. The Loop (Process each mutant)
+  162  for i, mutant_seq in enumerate(mutant_sequences):
+  163  print("-" * 30)
+  164  print("Fi
+  165  nano test_seqs.fa
+  166  cd enzyme_project
+  167  nano test_seqs.fa
+  168  nano pipeline.py
+  169  python3 pipeline.py
+  170  nano pipeline.py
+  171  rm pipeiline.py
+  172  rm pipeline.py
+  173  nano pipeline.py
+  174  python3 pipeline.py
+  175  nano pipeline.py
+  176  rm pipeline.py
+  177  nano pipeline.py
+  178  find ~ -name "protein_mpnn_run.py" 2>/dev/null
+  179  conda activate proteinmpnn
+  180  mkdir input_pdbs
+  181  cp 1CRN.pdb input_pdbs/
+  182  wget https://files.rcsb.org/download/1CRN.pdb
+  183  cp 1CRN.pdb input_pdbs/
+  184  python3 /home/darsh/ProteinMPNN/protein_mpnn_run.py   --pdb_path ./input_pdbs   --out_folder ./mpnn_results   --num_seq_per_target 5   --sampling_temp "0.1"   --batch_size 1
+  185  python3 /home/darsh/ProteinMPNN/protein_mpnn_run.py   --pdb_path ./input_pdbs/1CRN.pdb   --out_folder ./mpnn_results   --num_seq_per_target 5   --sampling_temp "0.1"   --batch_size 1
+  186  python3 pipeline.py
+  187  rm test_seqs.fa
+  188  ls -R mpnn_results
+  189  python3 pipeline.py
+  190  find . -name "*.fa"
+  191  nano pipeline.py
+  192  python3 pipeline.py
+  193  find ~ -name "foldx" 2>/dev/null
+  194  find ~ -iname "*foldx*" 2>/dev/null
+  195  git init
+  196  git add pipeline.py 1CRN.pdb
+  197  git commit -m "Initial commit: Added pipeline and random wild type protein (1CRN) pdb"
+  198  git config --global user.email "darshthesith@gmail.com"
+  199  git config --global user.name "Darsh"
+  200  git commit -m "Initial commit: Added pipeline and random wild type protein (1CRN) pdb"
+  202  git branch -M main
+  203  git push -u origin main
+  204  git pull origin main --rebase
+  205  git push -u origin main
+  206  git pull origin main --rebase  
+  208  git pull origin main --rebase
+  209  git push -u origin main
+  210  /home/darsh/ProteinMPNN/foldx_20251231.exe --help
+  211  nano pipeline.py
+  212  cat Dif_*.fxout
+  213  ls rotabase.txt
+  214  find ~ -name "rotabase.txt" 2>/dev/null
+  215  cp [/home/darsh/ProteinMPNN/rotabase.txt] .
+  216  cp /home/darsh/ProteinMPNN/rotabase.txt .
+  217  python3 pipeline.py
+  218  explor.exe .
+  219  explorer.exe .
+  220  rm pipeline.py
+  221  nanon pipeline.py
+  222  nano pipeline.py
+  223  python3 pipeline.py
+  224  rm pipeline.py
+  225  nano pipeline.py
+  226  rm pipeline.py
+  227  nano pipeline.py
+  228  python3 pipeline.py
+  229  git add pipeline.py
+  230  git commit -m "WIP: Added FoldX connection and file movement logic"
+  231  git push
+  232  exit
+  233  cd enzyme_project
+  234  ls
+  235  python3 pipeline.py
+  236  exit
+  237  nano hack_pdb.py
+  238  python 3 hack_pdb.py
+  239  python3 hack_pdb.py
+  240  wget https://files.rcsb.org/download/1ubq.pdb
+  241  python3 hack_pdb.py
+  242  ./foldx --command=Stability --pdb=1ubq_oxidized.pdb
+  243  cd foldx
+  244  ls
+  245  cd enzyme_project
+  246  ls
+  247  foldx --command=Stability --pdb=1ubq_oxidized.pdb
+  248  find ~ -name "foldx"
+  249  head -n 20 pipeline.py
+  250  mv ~/1ubq_oxidized.pdb .
+  251  /home/darsh/ProteinMPNN/foldx_20251231.exe --command=Stability --pdb=1ubq_oxidized.pdb
+  252  cat 1ubq_oxidized_0_ST.fxout
+  253  ls *1ubq*
+  254  grep "O   MET" 1ubq_oxidized_1.pdb
+  255  rm *1ubq* individual_list.txt
+  256  wget https://files.rcsb.org/download/1ubq.pdb
+  257  nano generate_mutants.py
+  258  python3 generate_mutants.py
+  259  /home/darsh/ProteinMPNN/foldx_20251231.exe --command=BuildModel --pdb=1ubq.pdb --mutant-file=individual_list.txt
+  260  cat Dif_1ubq.fxout
+  261  explore.exe .
+  262  explorer.exe .
+  263  git add oxidative_pipeline.py
+  264  nano generate_mutations.py
+  265  nano generate_mutants.py
+  266  git add oxidative_pipeline.py
+  267  git commit -m "Add automated oxidative-residue scanner and FoldX pipeline"
+  268  git push origin main
+  269  git pull origin main
+  270  git push origin main
+  271  git pull origin main --rebase
+  272  rm 1ubq.pdb
+  273  git pull origin main --rebase
+  274  git push origin main
+  275  exit
+  276  wget https://files.rcsb.org/download/1GV3.pdb
+  277  nano clea_pdb.py
+  278  python clean_pdb.py
+  279  ./foldx_20241231 --command=RepairPDB --pdb=1GV3_clean.pdb --ionStrength=0.05 --pH=7 --vdwDesign=2
+  280  ./foldx_20251231 --command=RepairPDB --pdb=1GV3_clean.pdb --ionStrength=0.05 --pH=7 --vdwDesign=2
+  281  cd enzyme_project
+  282  ls foldx
+  283  ls foldx_20251231.exe
+  284  find . -name "foldx*"
+  285  ls ~
+  286  ls /mnt/c/Users/YourName/Downloads
+  287  ls /mnt/c/Users/Darsh/Downloads
+  288  ./foldx_20251231.exe --command=RepairPDB --pdb=1GV3_clean.pdb --ionStrength=0.05 --pH=7 --vdwDesign=
+  289  cp /home/darsh/ProteinMPNN/foldx_20251231.exe .
+  290  ./foldx_20251231.exe --command=RepairPDB --pdb=1GV3_clean.pdb --ionStrength=0.05 --pH=7 --vdwDesign=2
+  291  foldx_20251231.exe --command=RepairPDB --pdb=1GV3_clean.pdb --ionStrength=0.05 --pH=7 --vdwDesign=2
+  292  cd /mnt/c/Users/Darsh/Downloads
+  293  cd ~/enzyme_project
+  294  wget https://files.rcsb.org/download/1GV3.pdb
+  295  python3 clean_pdb.py
+  296  python clean_pdb.py
+  297  echo 'with open("1GV3.pdb") as f, open("1GV3_clean.pdb", "w") as out:
+  298      for line in f:
+  299          if line.startswith("ATOM") or ("HETATM" in line and "MN" in line) or line.startswith("TER") or line.startswith("END"):
+  300              out.write(line)
+  301  print("Cleaned!")' > clean_pdb.py
+  302  python clean_pdb.py
+  303  echo "command=RepairPDB
+  304  pdb=1GV3_clean.pdb
+  305  ionStrength=0.05
+  306  pH=7
+  307  vdwDesign=2" > repair_run.cfg
+  308  ./foldx_20251231.exe -f repair_run.cfg
+  309  ./foldx_20251231.exe --command=BuildModel --pdb=1GV3_clean_Repair.pdb --mutant-file=test_mutants.txt --ionStrength=0.05 --pH=7 --vdwDesign=2
+  310  echo "command=BuildModel
+  311  pdb=1GV3_clean_Repair.pdb
+  312  mutant-file=test_mutants.txt
+  313  ionStrength=0.05
+  314  pH=7
+  315  vdwDesign=2" > shakeout_run.cfg
+  316  ./foldx_20251231.exe -f shakeout_run.cfg
+  317  sudo apt-get install dos2unix
+  318  unix2dos test_mutants.txt
+  319  # 1. Create the file again
+  320  echo -e "KA20A;\nDA21A;\nEA22A;" > test_mutants.txt
+  321  # 2. Convert it to Windows format (fix line endings)
+  322  unix2dos test_mutants.txt
+  323  # 3. Run FoldX
+  324  ./foldx_20251231.exe -f shakeout_run.cfg
+  325  # 1. Rename the mutant file to what FoldX wants
+  326  mv test_mutants.txt individual_list.txt
+  327  # 2. Update the config file to point to the new name
+  328  echo "command=BuildModel
+  329  pdb=1GV3_clean_Repair.pdb
+  330  mutant-file=individual_list.txt
+  331  ionStrength=0.05
+  332  pH=7
+  333  vdwDesign=2" > shakeout_run.cfg
+  334  # 3. Run it again
+  335  ./foldx_20251231.exe -f shakeout_run.cfg
+  336  grep "ATOM" 1GV3_clean_Repair.pdb | head -n 10
+  337  echo -e "SA25A;\nIA26A;\nSA25G;" > individual_list.txt
+  338  unix2dos individual_list.txt
+  339  ./foldx_20251231.exe -f shakeout_run.cfg
+  340  cd ~/ProteinMPNN
+  341  cp ~/enzyme_project/1GV3_MASTER.pdb .
+  342  cp ~/enzyme_project/1GV3_clean_Repair.pdb ./1GV3_MASTER.pdb
+  343  mkdir output_1GV3
+  344  conda activate proteinmpnn
+  345  python protein_mpnn_run.py     --pdb_path_chains "1GV3_MASTER.pdb"     --pdb_path_chains "1GV3_MASTER.pdb"     --out_folder "output_1GV3"     --num_seq_per_target 10     --sampling_temp "0.1"     --seed 37     --batch_size 1
+  346  python helper_scripts/parse_multiple_chains.py --input_path=. --output_path=parsed_pdbs.jsonl
+  347  python protein_mpnn_run.py     --jsonl_path parsed_pdbs.jsonl     --out_folder output_1GV3     --num_seq_per_target 10     --sampling_temp 0.1     --seed 37     --batch_size 1
+  348  nano analyze_mpnn.py
+  349  python analyze_mpnn.py
+  350  nano translate_mutations.py
+  351  python translate_mutations.py
+  352  nano translate_mutations.py
+  353  rm translate_mutations.py
+  354  nano translate_mutations.py
+  355  git init
+  356  # Go to your main project folder
+  357  cd ~/enzyme_project
+  358  # Copy the analysis scripts from the ProteinMPNN folder
+  359  cp ~/ProteinMPNN/translate_mutations.py .
+  360  cp ~/ProteinMPNN/analyze_mpnn.py .
+  361  # Also copy the mutation list we generated
+  362  cp ~/ProteinMPNN/mpnn_mutations.txt .
+  363  python translate_mutations.py
+  364  cd ~/ProteinMPNN
+  365  ls *.txt
+  366  cd ~/ProteinMPNN
+  367  # Rename it if it exists as sunday_list.txt
+  368  mv sunday_list.txt mpnn_mutations.txt 2>/dev/null
+  369  # Now copy it to the project folder
+  370  cp mpnn_mutations.txt ~/enzyme_project/
+  371  # Verify it's there
+  372  ls ~/enzyme_project/mpnn_mutations.txt
+  373  git status
+  374  echo "# Ignore everything
+  375  *
+  376  # Allow Python scripts
+  377  status.py
+  378  # Allow ONLY these specific text files
+  379  # Allow the gitignore itself
+  380  " > .gitignore
+  381  git rm -r --cached .
+  382  git add .
+  383  git status
+  384  # 1. Clear the "staging area" (unselect everything)
+  385  git reset
+  386  # 2. Add ONLY the two files you want
+  387  git add analyze_mpnn.py translate_mutations.py
+  388  # 3. Commit them
+  389  git commit -m "Add analysis and translation scripts"
+  390  # 4. Push
+  391  git push origin main
+  392  cd ~/enzyme_project
+  393  git add analyze_mpnn.py translate_mutations.py
+  394  git commit -m "Add analysis scripts"
+  395  git push origin main
+  396  # 1. Pull the changes from GitHub
+  397  git pull origin main --rebase
+  398  # 2. Push your changes up
+  399  git push origin main
+  400  # 1. Move your PDB to a temporary name so Git doesn't panic
+  401  mv 1GV3.pdb 1GV3.pdb.bak
+  402  # 2. Force the pull (this will download the GitHub version of 1GV3.pdb)
+  403  git pull origin main --rebase
+  404  # 3. Delete the GitHub version (it's probably old/wrong)
+  405  rm 1GV3.pdb
+  406  # 4. Restore YOUR version
+  407  mv 1GV3.pdb.bak 1GV3.pdb
+  408  # 5. Now push your scripts
+  409  git push origin main
+  410  exit
+  411  head -n 5 mpnn_mutations.txt
+  412  cd enzyme_project
+  413  head -n 5 mpnn_mutations.txt
+  414  explorer.exe .
+  415  ls -l
+  416  ls *.pdbls *.pdb
+  417  ls *.pdb
+  418  explorer.exe .
+  419  ./foldx_20251231 --command=RepairPDB --pdb=1GV3_clean.pdb --ionStrength=0.05 --pH=7.0 --water=CRYSTAL --vdwDesign=2
+  420  ./foldx_20251231.exe --command=RepairPDB --pdb=1GV3_clean.pdb --ionStrength=0.05 --pH=7.0 --water=CRYSTAL --vdwDesign=2
+  421  ls -l
+  422  cd enzyme_project
+  423  ./foldx_20251231.exe --command=RepairPDB --pdb=1GV3_clean.pdb --ionStrength=0.05 --pH=7.0 --water=CRYSTAL --vdwDesign=2
+  424  ls -l 1GV3_clean_Repair.pdb
+  425  nano turbo_run.py
+  426  python3 turbo_run.py
+  427  mv mpnn_mutations.txt individual_list.txt
+  428  rm turbo_script.py
+  429  rm turbo_run.py
+  430  nano turbo_run.py
+  431  python3 turbo_run.py
+  432  head -n 15 turbo_results.csv
+  433  ls Dif_* | head -n 5
+  434  head -n 5 Dif_1GV3_clean_Repair.fxout
+  435  head -n 5 individual_list.txt
+  436  head -n 5 Dif_1GV3_clean_Repair.fxout
+  437  head -n 15 Dif_1GV3_clean_Repair.fxout
+  438  history
+  439  history > full_project_history.txt
+  440  explore.exe .
+  441  explorer.exe .
+  442  nano decode_results.py
+  443  python3 decode_results.py
+  444  pip install pandas
+  445  python3 decode_results.py
+  446  nano decode_results.py
+  447  python3 decode_results.py
+  448  explorer.exe .
+  449  sed -n '11p' individual_list.txt
+  450  explorer.exe .
+  451  ./foldx_20251231 --command=Stability --pdb=1GV3_clean_Repair_11.pdb
+  452  ./foldx_20251231.exe --command=Stability --pdb=1GV3_clean_Repair_11.pdb
+  453  head -n 15 turbo_results.csv
+  454  head -n 3 Dif_1GV3_clean_Repair.fxout
+  455  head -n 20 Dif_1GV3_clean_Repair.fxout
+  456  nano count_hbonds.py
+  457  python3 count_hbonds.py
+  458  pip install MDAnalysis
+  459  python3 count_hbonds.py
+  460  rm count_hbonds.py
+  461  nano count_hbonds.py
+  462  python3 count_hbonds.py
+  463  rm count_hbonds.py
+  464  nano count_hbonds.py
+  465  python3 count_hbonds.py
+  466  rm count_hbonds.py
+  467  nano count_hbonds.py
+  468  python3 count_hbonds.py
+  469  rm count_hbonds.py
+  470  nano count_hbonds.py
+  471  python3 count_hbonds.py
+  472  nano count_hbonds.py
+  473  python3 count_hbonds.py
+  474  git add turbo_run.py hbond_proxy.py
+  475  git add turbo_run.py coun_hbonds.py
+  476  git add turbo_run.py count_hbonds.py
+  477  git commit -m "Day 6: Added Turbo Pipeline for batch FoldX runs and H-Bond counter script for structural validation"
+  478  git push origin main
+  479  exit
+  480  cd enzyme_project
+  481  explorer.exe .
+  482  nanon turbo_run.py
+  483  nano turbo_run.py
+  484  explorer.exe .
+  485  python3 turbo_run.py
+  486  nano turbo_run.py
+  487  python3 turbo_run.py
+  488  rm turbo_run.py
+  489  nano turb_run.py
+  490  python3 turbo_run.py
+  491  nano turbo_run.py
+  492  python3 turbo_run.py
+  493  cat Dif_1GV3_clean_Repair.fxout
+  494  explorer.exe .
+  495  rm turbo_run.py
+  496  nano turbo_run.py
+  497  python3 turbo_run.py
+  498  nano turbo_run.py
+  499  pytho3 turbo_run.py
+  500  python3 turbo_run.py
+  501  explorer.exe .
+  502  python3 count_hbonds.py 1GV3_triple_mutant_KA52R+GA159L+GA27A.pdb
+  503  nano count_hbonds.py
+  504  python3 count_hbonds.py
+  505  nano count_hbonds.py
+  506  python3 count_hbonds.py
+  507  exit
+  508  explorer.exe .
+  509  cd enzyme_project
+  510  explorer.exe .
+  511  nano calculate_rmsd_active_site.py
+  512  python3 calculate_rmsd_active_site.py
+  513  pip install biopython
+  514  import Bio.PDB
+  515  import numpy as np
+  516  import sys
+  517  import os
+  518  WT_PDB = "1GV3_clean_Repair.pdb"
+  519  MUTANT_PDB = "1GV3_triple_mutant_KA52R+GA159L+GA27A.pdb"
+  520  def get_active_site_residues(structure, chain_id="A"):
+  521  def calculate_active_site_rmsd(wt_file, mut_file):
+  522  cd enzyme_project
+  523  python3 calculate_rmsd_active_site.py
+  524  explorer.exe .
+  525  rm calculate_rmsd_active_site.py
+  526  nano calculate_rmsd_active_site.py
+  527  python3 calculate_rmsd_active_site.py
+  528  nano calculate_rmsd_active_site.py
+  529  explorer.exe .
+  530  ./foldx_20251231.exe --command=RepairPDB --pdb=1GV3_triple_mutant_KA52R+GA159L+GA27A.pdb
+  531  nano calculate_rmsd_active_site.pt
+  532  nano calculate_rmsd_active_site.py
+  533  python3 calculate_rmsd_active_site.py
+  534  ext
+  535  git add calculate_rmsd_active_site.py
+  536  git commit -m "Add active site RMSD audit script for Day 8 safety check"
+  537  git push
+  538  exit
+  539  cd enzyme_project
+  540  nano clean_pdb.py
+  541  rm clean_pdb.py
+  542  nano clea_pdb_ver2.py
+  543  wget https://files.rcsb.org/download/1DGB.pdb
+  544  nano clea_pdb_ver2.py
+  545  python clean_pdb_v2.py 1DGB.pdb 1DGB_cleaned.pdb
+  546  explorer.exe .
+  547  foldx --command=RepairPDB --pdb=1DGB_cleaned.pdb
+  548  exploer.exe .
+  549  explorer.exe .
+  550  ./foldx_20251231.exe --command=RepairPDB --pdb=1DGB_cleaned.pdb
+  551  explorer.exe .
+  552  ./foldx_20251231.exe --command=RepairPDB --pdb=1DGB_cleaned.pdb
+  553  ./foldx_20251231.exe --command=Stability --pdb=1DGB_cleaned_Repair.pdb
+  554  explorer.exe .
+  555  explorer.exe 
+  556  explorer.exe .
+  557  nano clean_pdb_v2.py
+  558  python clean_pdb_v2.py 1DGB.pb 1DGB_cleaned.pb
+  559  python clean_pdb_v2.py 1DGB.pdb 1DGB_cleaned.pdb
+  560  nano clean_pdb_v2.py
+  561  python clean_pdb_v2.py 1DGB.pdb 1DGB_cleaned.pdb
+  562  explorer.exe .
+  563  ./foldx_20251231.exe --command=Stability --pdb=1DGB_cleaned.pdb
+  564  ./foldx_20251231.exe --command=RepairPDB --pdb=1DGB_cleaned.pdb --ionStrength=0.05 --pH=7.0 --vdwDesign=2
+  565  foldx --command=Stability --pdb=1DGB_cleaned_Repair.pdb
+  566  ./foldx_20251231 --command=Stability --pdb=1DGB_cleaned_Repair.pdb
+  567  ./foldx_20251231.exe --command=Stability --pdb=1DGB_FoldX_Ready_Repair.pdb
+  568  ./foldx_20251231.exe --command=Stability --pdb=1DGB_cleaned_Repair.pdb
+  569  grep "HEM" 1DGB_cleaned_Repair.pdb | head -n 5
+  570  rm clean_pdb_v2.py
+  571  nano clean_pdb_v2.py
+  572  python clean_pdb_v2.py 1DGB.pdb 1DGB_FoldX_Ready.pdb
+  573  grep "HEM" 1DGB_FoldX_Ready.pdb | head -n 5
+  574  ./foldx_20251231.exe --command=RepairPDB --pdb=1DGB_FoldX_Ready.pdb
+  575  grep "HEM" 1DGB_FoldX_Ready_Repair.pdb | head -n 5
+  576  rm clean_pdb_v2.py
+  577  nano clean_pdb_v2.py
+  578  python clean_pdb_v4.py 1DGB.pdb 1DGB_FoldX_Masked.pdb
+  579  python clean_pdb_v2.py 1DGB.pdb 1DGB_FoldX_Masked.pdb
+  580  grep "HEM" 1DGB_FoldX_Masked.pdb | head -n 5
+  581  ./foldx_20251231.exe --command=RepairPDB --pdb=1DGB_FoldX_Masked.pdb
+  582  ./foldx_20251231.exe --command=Stability --pdb=1DGB_FoldX_Masked_Repair.pdb
+  583  grep "HEM" 1DGB_FoldX_Masked_Repair.pdb | head -n 5
+  584  nano clean_pdb_v2.py
+  585  python clean_pdb_v2.py 1DGB.pdb 1DGB_FoldX_Renumbered.pdb
+  586  grep "HEM" 1DGB_FoldX_Renumbered.pdb | head -n 5
+  587  ./foldx_20251231.exe --command=RepairPDB --pdb=1DGB_FoldX_Renumbered.pdb
+  588  grep "HEM" 1DGB_FoldX_Renumbered_Repair.pdb | head -n 5
+  589  ./foldx_20251231.exe --command=Stability --pdb=1DGB_FoldX_Renumbered_Repair.pdb
+  590  ./foldx_20251231.exe --command=BuildModel --pdb=1DGB_FoldX_Renumbered.pdb --mutant-file=dummy_run.txt --output-file=1DGB_SoftFixed
+  591  ./foldx_20251231.exe --command=BuildModel --pdb=1DGB_FoldX_Renumbered.pdb --mutant-file=dummy_run.txt
+  592  echo "AA10A;" > dummy_run.txt
+  593  ./foldx_20251231.exe --command=BuildModel --pdb=1DGB_FoldX_Renumbered.pdb --mutant-file=dummy_run.txt
+  594  mv dummy_run.txt mutant_file.txt
+  595  ./foldx_20251231.exe --command=BuildModel --pdb=1DGB_FoldX_Renumbered.pdb --mutant-file=mutant_file.txt
+  596  mv dummy_run.txt mutant_file.txt
+  597  ./foldx_20251231.exe --command=BuildModel --pdb=1DGB_FoldX_Renumbered.pdb --mutant-file=mutant_file.txt
+  598  head -n 20 1DGB_FoldX_Renumbered.pdb
+  599  echo "SA4S;" > mutant_file.txt
+  600  ./foldx_20251231.exe --command=BuildModel --pdb=1DGB_FoldX_Renumbered.pdb --mutant-file=mutant_file.txt
+  601  ./foldx_20251231.exe --command=SequenceDetail --pdb=1DGB_FoldX_Renumbered.pdb
+  602  head -n 20 SequenceDetail_1DGB_FoldX_Renumbered.fxout
+  603  ls -lt | head
+  604  head -n 20 SD_1DGB_FoldX_Renumbered.fxout
+  605  echo "SERA4S;" > mutant_file.txt
+  606  ./foldx_20251231.exe --command=BuildModel --pdb=1DGB_FoldX_Renumbered.pdb --mutant-file=mutant_file.txt
+  607  echo "SA1S;" > mutant_file.txt
+  608  ./foldx_20251231.exe --command=BuildModel --pdb=1DGB_FoldX_Renumbered.pdb --mutant-file=mutant_file.txt
+  609  echo "AA8A;" > mutant_file.txt
+  610  ./foldx_20251231.exe --command=BuildModel --pdb=1DGB_FoldX_Renumbered.pdb --mutant-file=mutant_file.txt
+  611  python -c "with open('mutant_file.txt', 'w') as f: f.write('SA4S;')"
+  612  ./foldx_20251231.exe --command=BuildModel --pdb=1DGB_FoldX_Renumbered.pdb --mutant-file=mutant_file.txt
+  613  python -c "with open('mutant_file.txt', 'w') as f: f.write('SA4S;')"
+  614  ./foldx_20251231.exe --command=BuildModel --pdb=1DGB_FoldX_Renumbered.pdb --mutant-file=mutant_file.txt
+  615  python -c "with open('mutant_file.txt', 'w') as f: f.write('SA4S;')"
+  616  ./foldx_20251231.exe --command=BuildModel --pdb=1DGB_FoldX_Renumbered.pdb --mutant-file=mutant_file.txt
+  617  conda install -c conda-forge openmm pdbfixer
+  618  nano repair_with_openmm.py
+  619  python repair_with_openmm.py 1DGB_cleaned.pdb 1DGB_OpenMM_Repaired.pdb
+  620  rm repair_with_openmm.py
+  621  nano repair_with_openmm.py
+  622  python repair_with_openmm.py 1DGB_cleaned.pdb 1DGB_OpenMM_Repaired.pdb
+  623  rm repaire_with_openmm.py
+  624  rm repair_with_openmm.py
+  625  nano repair_with_openmm.py
+  626  python repair_with_openmm.py 1DGB_cleaned.pdb 1DGB_OpenMM_Repaired.pdb
+  627  nano repair_with_openmm.py
+  628  python repair_with_openmm.py 1DGB_cleaned.pdb 1DGB_OpenMM_Repaired.pdb
+  629  rm repair_with_openmm.py
+  630  nano repair_with_openmm.py
+  631  python repair_with_openmm.py 1DGB_cleaned.pdb 1DGB_OpenMM_Repaired.pdb
+  632  # 1. Install the tool to fix line endings
+  633  sudo apt-get install dos2unix
+  634  # 2. Fix the PDB and the mutation file
+  635  dos2unix 1DGB_FoldX_Renumbered.pdb
+  636  dos2unix mutant_file.txt
+  637  # 3. Re-create the mutation file using Python to be 100% sure it's clean
+  638  python -c "with open('mutant_file.txt', 'w') as f: f.write('SA4S;\n')"
+  639  # 4. Run FoldX
+  640  ./foldx_20251231.exe --command=BuildModel --pdb=1DGB_FoldX_Renumbered.pdb --mutant-file=mutant_file.txt
+  641  nano pdb_surgery.py
+  642  python pdb_surgery.py split 1DGB_cleaned.pdb
+  643  ./foldx_20251231.exe --command=RepairPDB --pdb=protein_only.pdb
+  644  python pdb_surgery.py merge protein_only_Repair.pdb heme_only.pdb 1DGB_Frankenstein.pdb
+  645  ./foldx_20251231.exe --command=Stability --pdb=1DGB_Frankenstein.pdb
+  646  python clean_pdb_v3.py 1DGB_Frankenstein.pdb 1DGB_Frankenstein_Sorted.pdb
+  647  python clean_pdb_v2.py 1DGB_Frankenstein.pdb 1DGB_Frankenstein_Sorted.pdb
+  648  ./foldx_20251231.exe --command=Stability --pdb=1DGB_Frankenstein_Sorted.pdb
+  649  grep "HEM" 1DGB_Frankenstein_Sorted.pdb | head -n 5
+  650  (base) ls -F
+  651  ls -F
+  652  ./foldx_20251231.exe --command=ParamX --pdb=1DGB_cleaned.pdb
+  653  cat Unrecognized_molecules.txt
+  654  ls -F molecules/
+  655  pip install pyrosetta-installer
+  656  python3 -c "import pyrosetta_installer; pyrosetta_installer.install_pyrosetta()"
+  657  python3 -c "import pyrosetta; pyrosetta.init()"
+  658  nano clean_pdb_v2.py
+  659  git add clean_pdb_v2.py
+  660  git commit -m "Refactor clean_pdb: Added Heme whitelist and sorting logic for PyRosetta compatibility"
+  661  git push origin main
+  662  git pull --no-edit origin main
+  663  git push origin main
+  664  git pull origin main --no-edit
+  665  exit
+  666  cd enzyme_project
+  667  nano clean_pdb_v2.py
+  668  exit
+  669  cd enzyme_project
+  670  tail -f mutations.csv
+  671  cd enzyme_project
+  672  wget https://files.rcsb.org/download/1DGB.pdb
+  673  explorer.exe .
+  674  nano rosetta_check.py
+  675  python rosetta_check.py
+  676  nano cartesian_ddg_test.pt
+  677  python cartesian_ddg_test.py
+  678  nano cartesian_ddg_test.py
+  679  python cartesian_ddg_test.py
+  680  nano rosetta_scanner.py
+  681  python rosetta_scanner.py
+  682  exit
+  683  cd enzyme_project
+  684  stat mutations.csv
+  685  wc -l mutations.csv
+  686  cd enzyme_project
+  687  nano analyze_results.py
+  688  nano analyze_results_1DGB.py
+  689  python analyze_results_1DGB.py
+  690  explorer.exe .
+  691  nano analyze_results_1DGB.py
+  692  python analyze_results_1DGB.py
+  693  explorer.exe .
+  694  git add analyze_results_1DGB.py
+  695  git commit -m "Add data analysis pipeline for 1DGB (Catalase) stability scan"
+  696  git push origin main
+  697  git pull origin main
+  698  git push origin main
+  699  git config pull.rebase false
+  700  git pull origin main
+  701  rm 1DGB.pdb
+  702  git pull origin main
+  703  git push origin main
+  704  nano analyze_results_1DGB.py
+  705  exit
+  706  cd enzyme_project
+  707  python analyze_mpnn_v2.py
+  708  exit
+  709  cd enzyme_project
+  710  explorer.exe .
+  711  nano mpnn_prep.py
+  712  python mpnn_prep.py
+  713  python analyze_mpnn_v2.py
+  714  nano analyze_mpnn_v2.py
+  715  python analyze_mpnn_v2.py
+  716  python ProteinMPNN/helper_scripts/parse_multiple_chains.py --input_path=./ --output_path=./parsed_pdbs.jsonl
+  717  ls -F
+  719  python ProteinMPNN/helper_scripts/parse_multiple_chains.py --input_path=./ --output_path=./parsed_pdbs.jsonl
+  720  python ProteinMPNN/protein_mpnn_run.py --jsonl_path parsed_pdbs.jsonl --out_folder mpnn_output --num_seq_per_target 30 --sampling_temp 0.1 --seed 37 --save_score 1 --save_probs 1
+  721  pip install torch
+  722  python ProteinMPNN/protein_mpnn_run.py --jsonl_path parsed_pdbs.jsonl --out_folder mpnn_output --num_seq_per_target 30 --sampling_temp 0.1 --seed 37 --save_score 1 --save_probs 1
+  723  explorer.exe .
+  724  mkdir -p mpnn_1DGB_targets
+  725  cp 1DGB_cleaned.pdb mpnn_1DGB_targets/
+  726  python ProteinMPNN/helper_scripts/parse_multiple_chains.py --input_path=./mpnn_1DGB_targets --output_path=./parsed_pdbs.jsonl
+  727  python ProteinMPNN/protein_mpnn_run.py --jsonl_path parsed_pdbs.jsonl --out_folder mpnn_output --num_seq_per_target 30 --sampling_temp 0.1 --seed 37 --save_score 1 --save_probs 1
+  728  python analyze_mpnn_v2.py
+  729  nano analyze_mpnn_v2.py
+  730  python analyze_mpnn_v2.py
+  731  rm -rf mpnn_output
+  732  python ProteinMPNN/protein_mpnn_run.py --jsonl_path parsed_pdbs.jsonl --out_folder mpnn_output --num_seq_per_target 30 --sampling_temp 0.1 --seed 37 --save_score 1 --save_probs 1
+  733  python analyze_mpnn_v2.py
+  734  nano validate_1DGB_mpnn.py
+  735  python validate_1DGB_mpnn.py
+  736  nano validate_1DGB_mpnn.py
+  737  ls -ltr *.csv
+  738  mv mpnn_candidates.csv mpnn_1DGB_candidates.csv
+  739  python validate_1DGB_mpnn.py
+  740  nano validate_1DGB_mpnn.py
+  741  python validate_1DGB_mpnn.py
+  742  exit
+  743  cd enzyme_project
+  744  nano analyze_mpnn_rosetta.py
+  745  python analyze_mpnn_rosetta.py
+  746  nano analyze_mpnn_rosetta.py
+  747  python analyze_mpnn_rosetta.py
+  748  nano check_clash.py
+  749  python check_clash.py H163N
+  750  ls -R
+  751  nano generate_heme.py
+  752  python generate_heme.py
+  753  nano generate_heme.py
+  754  python generate_heme.py
+  755  nano generate_heme.py
+  756  rm generate_heme.py
+  757  nano generate_heme.py
+  758  python generate_heme.py
+  759  find /home/darsh/miniconda3/lib/python3.13/site-packages/pyrosetta/database -name "heme.params" -o -name "HEM.params"
+  760  mkdir -p assets
+  761  cat <<EOF > assets/HEM.params
+  762  NAME HEM
+  763  IO_STRING HEM Z
+  764  TYPE LIGAND
+  765  AA UNK
+  766  ATOM  FE  Fe   2.00  0.65
+  767  ATOM  NA  Nrp  -0.38  0.30
+  768  ATOM  NB  Nrp  -0.38  0.30
+  769  ATOM  NC  Nrp  -0.38  0.30
+  770  ATOM  ND  Nrp  -0.38  0.30
+  771  ATOM  C1A aroC  0.12  0.00
+  772  ATOM  C2A aroC -0.05  0.00
+  773  ATOM  C3A aroC -0.05  0.00
+  774  ATOM  C4A aroC  0.12  0.00
+  775  ATOM  C1B aroC  0.12  0.00
+  776  ATOM  C2B aroC -0.05  0.00
+  777  ATOM  C3B aroC -0.05  0.00
+  778  ATOM  C4B aroC  0.12  0.00
+  779  ATOM  C1C aroC  0.12  0.00
+  780  ATOM  C2C aroC -0.05  0.00
+  781  ATOM  C3C aroC -0.05  0.00
+  782  ATOM  C4C aroC  0.12  0.00
+  783  ATOM  C1D aroC  0.12  0.00
+  784  ATOM  C2D aroC -0.05  0.00
+  785  ATOM  C3D aroC -0.05  0.00
+  786  ATOM  C4D aroC  0.12  0.00
+  787  ATOM  CHA CH1   0.00  0.10
+  788  ATOM  CHB CH1   0.00  0.10
+  789  ATOM  CHC CH1   0.00  0.10
+  790  ATOM  CHD CH1   0.00  0.10
+  791  ATOM  CMA CH3   0.00  0.10
+  792  ATOM  CMB CH3   0.00  0.10
+  793  ATOM  CMC CH3   0.00  0.10
+  794  ATOM  CMD CH3   0.00  0.10
+  795  ATOM  CAA CH2   0.00  0.10
+  796  ATOM  CBA CH2   0.00  0.10
+  797  ATOM  CGA COO   0.34  0.00
+  798  ATOM  O1A OOC  -0.60 -0.60
+  799  ATOM  O2A OOC  -0.60 -0.60
+  800  ATOM  CAD CH2   0.00  0.10
+  801  ATOM  CBD CH2   0.00  0.10
+  802  ATOM  CGD COO   0.34  0.00
+  803  ATOM  O1D OOC  -0.60 -0.60
+  804  ATOM  O2D OOC  -0.60 -0.60
+  805  BOND_TYPE FE  NA 
+  806  BOND_TYPE FE  NB 
+  807  BOND_TYPE FE  NC 
+  808  BOND_TYPE FE  ND 
+  809  BOND_TYPE NA  C1A
+  810  BOND_TYPE C1A C2A
+  811  BOND_TYPE C2A C3A
+  812  BOND_TYPE C3A C4A
+  813  BOND_TYPE C4A NA 
+  814  BOND_TYPE NB  C1B
+  815  BOND_TYPE C1B C2B
+  816  BOND_TYPE C2B C3B
+  817  BOND_TYPE C3B C4B
+  818  BOND_TYPE C4B NB 
+  819  BOND_TYPE NC  C1C
+  820  BOND_TYPE C1C C2C
+  821  BOND_TYPE C2C C3C
+  822  BOND_TYPE C3C C4C
+  823  BOND_TYPE C4C NC 
+  824  BOND_TYPE ND  C1D
+  825  BOND_TYPE C1D C2D
+  826  BOND_TYPE C2D C3D
+  827  BOND_TYPE C3D C4D
+  828  BOND_TYPE C4D ND 
+  829  BOND_TYPE C1A CHA
+  830  BOND_TYPE CHA C4D
+  831  BOND_TYPE C1B CHB
+  832  BOND_TYPE CHB C4A
+  833  BOND_TYPE C1C CHC
+  834  BOND_TYPE CHC C4B
+  835  BOND_TYPE C1D CHD
+  836  BOND_TYPE CHD C4C
+  837  BOND_TYPE C2A CAA
+  838  BOND_TYPE CAA CBA
+  839  BOND_TYPE CBA CGA
+  840  BOND_TYPE CGA O1A
+  841  BOND_TYPE CGA O2A
+  842  BOND_TYPE C3A CMA
+  843  BOND_TYPE C2B CMB
+  844  BOND_TYPE C3B CAB
+  845  BOND_TYPE CAB CBB
+  846  BOND_TYPE C2C CMC
+  847  BOND_TYPE C3C CAC
+  848  BOND_TYPE CAC CBC
+  849  BOND_TYPE C2D CMD
+  850  BOND_TYPE C3D CAD
+  851  BOND_TYPE CAD CBD
+  852  BOND_TYPE CBD CGD
+  853  BOND_TYPE CGD O1D
+  854  BOND_TYPE CGD O2D
+  855  CUT_BOND O2A
+  856  CUT_BOND O2D
+  857  NBR_ATOM FE 
+  858  NBR_RADIUS 6.0
+  859  ICOOR_INTERNAL    NA     0.000000    0.000000    0.000000   FE    NB    NC  
+  860  ICOOR_INTERNAL    NB     0.000000  180.000000    2.000000   FE    NA    NC  
+  861  ICOOR_INTERNAL    NC     0.000000   90.000000    2.000000   FE    NA    NB  
+  862  ICOOR_INTERNAL    ND     0.000000   90.000000    2.000000   FE    NB    NA  
+  863  EOF
+  864  python check_clash.py
+  865  grep "init" validate_1DGB_mpnn.py
+  866  nano check_clash.py
+  867  python check_clash.py H163N
+  868  rm verify_combo.py
+  869  rm check_clash.py
+  870  rm generate_heme.py
+  871  nano verify_combo.py
+  872  python verify_combo.py
+  873  rm verify_combo.py
+  874  nano verify_combo.py
+  875  python verify_combo.py
+  876  kill -9 %1
+  877  python verify_combo.py H163N A21P M53L
+  878  kill -9 %1
+  879  python verify_combo.py H163N A5S A21P
+  880  git status
+  881  git add verify_combo.py analyze_mpnn_rosetta.py
+  882  git commit -m "Day 13: Added verify_combo.py (Multi-Mutant Builder) and analyze_mpnn_rosetta.py (Ranking Logic)"
+  883  # 1. Add the conflicted file to mark it as resolved (using your current version)
+  884  git add clean_pdb_v2.py
+  885  # 2. Now try the commit again
+  886  git commit -m "Day 13: Added verify_combo.py and analyze_mpnn_rosetta.py. Resolved conflict in clean_pdb."
+  887  # 3. Push
+  888  git push origin main
+  889  git pull origin main
+  890  git push origin main
+  891  git pull --rebase origin main
+  892  git push origin main
+  893  git push -f origin main
+  894  nano check_active_site_1DGB_mutant.py
+  895  python check_active_site.py SuperMutant_H163N_A5S_A21P.pdb
+  896  python check_active_site_1DGB_mutant.py
+  897  nano check_active_site_1DGB_mutant_forced.py
+  898  python check_active_site_1DGB_mutant_forced.py\
+  899  python check_active_site_1DGB_mutant_forced.py
+  900  nano benchmark_wt.py
+  901  python benchmark_wt.py
+  902  exit
+  903  cd enzyme_project
+  904  explorer.exe .
+  905  ls -lh 1DGB_cleaned.pdb
+  906  exit
+  907  cd enzyme_project
+  908  nano deconvolute_1DGB_mutant.py
+  909  python deconvolute_1DGB_mutant.py
+  910  cd enzyme_project
+  911  htop
+  912  cd enzyme_project
+  913  nano deconvolute_1DGB_mutant.py
+  914  python deconvolute_1DGB_mutant.py
+  915  cd enzyme_project
+  916  python deconvolute_1DGB_mutant.py
+  917  rm import pyrosetta
+  918  from pyrosetta import *
+  919  from pyrosetta.rosetta.protocols.relax import FastRelax
+  920  import multiprocessing
+  921  import time
+  922  import os
+  923  import numpy as np
+  924  import pandas as pd
+  925  PDB_FILE = "1DGB_Relaxed_WT.pdb"
+  926  RAW_OUTPUT_FILE = "deconvolute_raw.csv"
+  927  FINAL_SUMMARY_FILE = "deconvolute_summary.csv"
+  928  THREADS_TO_USE = 8
+  929  N_STRUCT = 3
+  930  def init_rosetta():
+  931  def get_3_letter_code(one_letter):
+  932  def perform_mutation_task(args):
+  933  if __name__ == "__main__":;     multiprocessing.set_start_method("spawn")
+  934  rm deconvolute_1DGB_mutant.py
+  935  nano deconvolute_1DGB_mutant.py
+  936  python deconvolute_1DGB_mutant.py
+  937  cd enzyme_project
+  938  htop
+  939  cd enzyme_project
+  940  python deconvolute_1DGB_mutant.py
+  941  nano deconvolute_1DGB_mutant.py
+  942  python deconvolute_1DGB_mutant.py
+  943  git status
+  944  git add deconvolute_1DGB_mutant.py deconvolute_summary.csv
+  945  git commit -m "Day 15: Completed deconvolution of Triple Mutant. H163N is top stabilizer. Note: Absolute energy baseline shifted, need WT control."
+  946  git checkout --ours analyze_results_1DGB.py
+  947  git add analyze_results_1DGB.py
+  948  git commit -m "Day 15: Resolved conflict. Completed deconvolution. H163N top stabilizer. Need WT control."
+  949  git push origin main
+  950  history >> command_history_day15_16.log
